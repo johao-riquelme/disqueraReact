@@ -18,6 +18,7 @@ import { AdminHome } from './view/AdminHome';
 import { AdminUsuarios } from './view/AdminUsuarios';
 import { AdminProductos } from './view/AdminProductos';
 import { AdminNuevoProducto } from './view/AdminNuevoProducto';
+import { Blog } from './view/Blog';
 
 function App() {
   const [showCart, setShowCart] = useState(false);
@@ -42,6 +43,7 @@ function App() {
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/albunes" element={<Albunes />} />
+        <Route path="/blog" element={<Blog />} />
 
         {/* Vistas administrativas */}
         <Route path="/admin" element={<AdminHome />} />

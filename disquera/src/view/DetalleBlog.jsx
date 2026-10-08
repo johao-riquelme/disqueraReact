@@ -1,1 +1,0 @@
-apartando de detalle de blog

@@ -13,6 +13,7 @@ import { Registro } from './view/Registros';
 import { Servicios } from './view/Servicios';
 import { Contacto } from './view/Contacto';
 import { Albunes } from './view/Albunes';
+import { Nosotros } from './view/Nosotros';
 
 import { AdminHome } from './view/AdminHome';
 import { AdminUsuarios } from './view/AdminUsuarios';
@@ -42,6 +43,7 @@ function App() {
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/albunes" element={<Albunes />} />
+        <Route path="/nosotros" element={<Nosotros />} />
 
         {/* Vistas administrativas */}
         <Route path="/admin" element={<AdminHome />} />

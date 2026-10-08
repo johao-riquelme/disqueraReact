@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -15,11 +16,14 @@ import { Contacto } from './view/Contacto';
 import { Albunes } from './view/Albunes';
 import { Nosotros } from './view/Nosotros';
 
+// Blog
+import { Blog } from './view/Blog';
+
+// Vistas administrativas
 import { AdminHome } from './view/AdminHome';
 import { AdminUsuarios } from './view/AdminUsuarios';
 import { AdminProductos } from './view/AdminProductos';
 import { AdminNuevoProducto } from './view/AdminNuevoProducto';
-import { Blog } from './view/Blog';
 
 function App() {
   const [showCart, setShowCart] = useState(false);
@@ -32,38 +36,51 @@ function App() {
       <Navbar handleShowCart={handleShowCart} />
 
       <Routes>
-        {/* Vistas públicas */}
+        {/* VISTAS PÚBLICAS */}
+
         <Route path="/" element={<Home />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/registro" element={<Registro />} />
+
         <Route path="/productos" element={<Productos />} />
+
         <Route
           path="/productos/:id"
           element={<DetalleProducto />}
         />
-        <Route path="/servicios" element={<Servicios />} />
-        <Route path="/contacto" element={<Contacto />} />
-        <Route path="/albunes" element={<Albunes />} />
-<<<<<<< HEAD
-        <Route path="/blog" element={<Blog />} />
-=======
-        <Route path="/nosotros" element={<Nosotros />} />
->>>>>>> 1c2af42ac044991b505fd9b18e8e4b9251572517
 
-        {/* Vistas administrativas */}
+        <Route path="/servicios" element={<Servicios />} />
+
+        <Route path="/contacto" element={<Contacto />} />
+
+        <Route path="/albunes" element={<Albunes />} />
+
+        <Route path="/nosotros" element={<Nosotros />} />
+
+        {/* BLOG */}
+        <Route path="/blog" element={<Blog />} />
+
+        {/* VISTAS ADMINISTRATIVAS */}
+
         <Route path="/admin" element={<AdminHome />} />
+
         <Route
           path="/admin/usuarios"
           element={<AdminUsuarios />}
         />
+
         <Route
           path="/admin/productos"
           element={<AdminProductos />}
         />
+
         <Route
           path="/admin/productos/nuevo"
           element={<AdminNuevoProducto />}
         />
+
       </Routes>
 
       <Footer />

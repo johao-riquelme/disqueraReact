@@ -95,7 +95,7 @@ export function Blog() {
               className="col-12 col-md-6 col-lg-4"
               key={blog.id}
             >
-              <article className="blog-card content-box">
+              <article className="card blog-card content-box">
 
                 <img
                   src={blog.imagen}

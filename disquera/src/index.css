@@ -274,10 +274,8 @@ h1, h2, h3, h5, .brand-title {
 /* TARJETAS DEL BLOG */
 
 .blog-card {
+    background-color: rgba(35, 35, 35, 0.85);
     height: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
 }
 
 .blog-card:hover {

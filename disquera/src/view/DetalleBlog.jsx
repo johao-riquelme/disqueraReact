@@ -11,7 +11,6 @@ function cargarComentarios(id) {
     );
 
     const datos = guardados ? JSON.parse(guardados) : [];
-
     return Array.isArray(datos) ? datos : [];
   } catch {
     return [];
@@ -39,7 +38,7 @@ function DetalleContenido({ id }) {
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
 
-  // Publicar un comentario
+  // Publicar comentario
   const publicarComentario = (e) => {
     e.preventDefault();
 
@@ -86,12 +85,10 @@ function DetalleContenido({ id }) {
           Publicación no encontrada
         </h2>
 
-        <p>
-          La noticia que buscas no está disponible.
-        </p>
+        <p>La noticia que buscas no está disponible.</p>
 
-        <Link to="/blog" className="btn btn-warning mt-3">
-          Volver al Blog
+        <Link to="/blog" className="btn btn-warning fw-bold mt-3">
+          ← Volver al Blog
         </Link>
       </div>
     );
@@ -100,8 +97,11 @@ function DetalleContenido({ id }) {
   return (
     <div className="container py-5">
 
-      {/* VOLVER AL BLOG */}
-      <Link to="/blog" className="detalle-volver">
+      {/* BOTÓN VOLVER AL BLOG */}
+      <Link
+        to="/blog"
+        className="btn btn-warning fw-bold mb-4"
+      >
         ← Volver al Blog
       </Link>
 
@@ -132,7 +132,10 @@ function DetalleContenido({ id }) {
       )}
 
       {/* CONTENIDO DE LA PUBLICACIÓN */}
-      <article className="detalle-contenido">
+      <article
+        className="detalle-contenido card content-box p-4"
+        style={{ backgroundColor: "rgba(35, 35, 35, 0.85)" }}
+      >
 
         {blog.descripcion && (
           <p className="detalle-descripcion">
@@ -191,7 +194,10 @@ function DetalleContenido({ id }) {
       </article>
 
       {/* SECCIÓN DE COMENTARIOS */}
-      <section className="detalle-comentarios">
+      <section
+        className="detalle-comentarios card content-box p-4"
+        style={{ backgroundColor: "rgba(35, 35, 35, 0.85)" }}
+      >
 
         <h2 className="gold-title">
           Comentarios ({comentarios.length})

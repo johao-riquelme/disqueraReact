@@ -34,7 +34,7 @@ export function Blog() {
   });
 
   return (
-    <main className="blog-page">
+    <main className="fondo-hero blog-page">
 
       {/* ENCABEZADO DEL BLOG */}
       <section className="blog-hero">
@@ -43,9 +43,9 @@ export function Blog() {
             BLOG OFICIAL
           </span>
 
-          <h1>
-            NOVEDADES DE NUESTRA DISQUERA
-          </h1>
+          <h1 className="gold-title">
+           NOVEDADES DE NUESTRA DISQUERA
+            </h1>
 
           <p>
             Descubre las últimas noticias de The Reyes Records,
@@ -95,7 +95,7 @@ export function Blog() {
               className="col-12 col-md-6 col-lg-4"
               key={blog.id}
             >
-              <article className="blog-card">
+              <article className="blog-card content-box">
 
                 <img
                   src={blog.imagen}
@@ -111,7 +111,9 @@ export function Blog() {
                     <small>{blog.fecha}</small>
                   </div>
 
-                  <h3>{blog.titulo}</h3>
+                 <h3 className="gold-title">
+                  {blog.titulo}
+                  </h3>
 
                   <p>{blog.descripcion}</p>
 

@@ -5,7 +5,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ModalCarrito } from './components/ModalCarrito';
-
 import { Home } from './view/Home';
 import { Login } from './view/Login';
 import { Productos } from './view/Productos';
@@ -15,7 +14,7 @@ import { Servicios } from './view/Servicios';
 import { Contacto } from './view/Contacto';
 import { Albunes } from './view/Albunes';
 import { Nosotros } from './view/Nosotros';
-
+import { DetalleBlog } from './view/DetalleBlog';
 // Blog
 import { Blog } from './view/Blog';
 
@@ -61,6 +60,7 @@ function App() {
 
         {/* BLOG */}
         <Route path="/blog" element={<Blog />} />
+<Route path="/blog/:id" element={<DetalleBlog />} />
 
         {/* VISTAS ADMINISTRATIVAS */}
 

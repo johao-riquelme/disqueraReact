@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { obtenerBlogPorId } from "../data/blogs";
@@ -94,16 +93,18 @@ function DetalleContenido({ id }) {
     );
   }
 
-  return (
-    <div className="container py-5">
+ return (
+  <div className="container pt-5 pb-5">
 
-      {/* BOTÓN VOLVER AL BLOG */}
+    {/* BOTÓN VOLVER AL BLOG */}
+    <div className="mt-5 mb-4">
       <Link
         to="/blog"
-        className="btn btn-warning fw-bold mb-4"
+        className="btn btn-warning fw-bold"
       >
         ← Volver al Blog
       </Link>
+    </div>
 
       {/* ENCABEZADO */}
       <header className="detalle-encabezado">

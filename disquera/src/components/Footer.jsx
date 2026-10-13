@@ -21,6 +21,13 @@ export const Footer = () => {
               </li>
 
               <li className="mb-2">
+                 <Link to="/nosotros" className="text-light text-decoration-none">
+                  Nosotros
+                 </Link>
+              </li>
+
+
+              <li className="mb-2">
                 <Link to="/servicios" className="text-light text-decoration-none">
                   Servicios de Estudio
                 </Link>

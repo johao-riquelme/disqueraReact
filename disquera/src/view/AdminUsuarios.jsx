@@ -6,12 +6,17 @@ export const AdminUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
-    const dataUsuarios = [
-      { id: 1, nombre: "Johao Riquelme", email: "admin@thereyesrecords.cl", rol: "Administrador" },
-      { id: 2, nombre: "Carlos Torres", email: "carlos@ejemplo.cl", rol: "Cliente" },
-      { id: 3, nombre: "Sofía Valenzuela", email: "sofia@ejemplo.cl", rol: "Cliente" }
-    ];
-    setUsuarios(dataUsuarios);
+    // Simulación de carga de usuarios desde la Base de Datos
+    const obtenerUsuariosFalsos = () => {
+      const dataUsuarios = [
+        { id: 1, nombre: "Johao Riquelme", email: "admin@thereyesrecords.cl", rol: "Administrador" },
+        { id: 2, nombre: "Carlos Torres", email: "carlos@ejemplo.cl", rol: "Cliente" },
+        { id: 3, nombre: "Sofía Valenzuela", email: "sofia@ejemplo.cl", rol: "Cliente" }
+      ];
+      setUsuarios(dataUsuarios);
+    };
+
+    obtenerUsuariosFalsos();
   }, []);
 
   const handleEliminarUsuario = (id) => {
@@ -23,15 +28,17 @@ export const AdminUsuarios = () => {
   return (
     <div className="container-fluid bg-dark text-light min-vh-100 p-0 overflow-hidden">
       <div className="row g-0">
+        {/* Barra lateral unificada */}
         <AdminSidebar />
 
+        {/* Contenido Principal */}
         <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
           <div className="pb-3 mb-4 border-bottom border-secondary">
             <h1 className="h3 text-warning fw-bold m-0">Listado de Usuarios Registrados</h1>
-            <small className="text-muted">Administración de accesos y perfiles</small>
+            <small className="text-white fs-6">Gestión de accesos, cuentas activas y roles del sistema</small>
           </div>
 
-          <div className="bg-black p-3 rounded-3 border border-secondary shadow">
+          <div className="bg-black p-4 rounded-3 border border-secondary shadow-lg">
             <Table responsive borderless hover variant="dark" align="middle" className="mb-0">
               <thead>
                 <tr className="border-bottom border-secondary text-warning">
@@ -48,9 +55,9 @@ export const AdminUsuarios = () => {
                       <i className="bi bi-person-circle me-2 text-warning"></i>
                       {user.nombre}
                     </td>
-                    <td className="text-light">{user.email}</td>
+                    <td className="text-white">{user.email}</td>
                     <td>
-                      <span className={`badge ${user.rol === 'Administrador' ? 'bg-warning text-dark' : 'bg-secondary'}`}>
+                      <span className={`badge ${user.rol === 'Administrador' ? 'bg-warning text-dark fw-bold' : 'bg-secondary text-white'}`}>
                         {user.rol}
                       </span>
                     </td>
@@ -59,8 +66,9 @@ export const AdminUsuarios = () => {
                         variant="outline-danger" 
                         size="sm"
                         onClick={() => handleEliminarUsuario(user.id)}
+                        title="Eliminar usuario"
                       >
-                        <i className="bi bi-trash"></i>
+                        <i className="bi bi-trash me-1"></i> Eliminar
                       </Button>
                     </td>
                   </tr>

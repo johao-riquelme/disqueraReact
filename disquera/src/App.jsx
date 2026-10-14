@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -26,15 +26,21 @@ import { AdminUsuarios } from './view/AdminUsuarios';
 import { AdminProductos } from './view/AdminProductos';
 import { AdminNuevoProducto } from './view/AdminNuevoProducto';
 
-function App() {
+// Componente para aplicar el layout condicional
+function AppContent() {
   const [showCart, setShowCart] = useState(false);
+  const location = useLocation();
 
   const handleCloseCart = () => setShowCart(false);
   const handleShowCart = () => setShowCart(true);
 
+  // Verificamos si la ruta actual empieza por /admin
+  const esAdmin = location.pathname.startsWith('/admin');
+
   return (
-    <Router>
-      <Navbar handleShowCart={handleShowCart} />
+    <>
+      {/* Solo renderiza el Navbar si NO estamos en una ruta de administración */}
+      {!esAdmin && <Navbar handleShowCart={handleShowCart} />}
 
       <Routes>
         {/* VISTAS PÚBLICAS */}
@@ -63,12 +69,23 @@ function App() {
         <Route path="/admin/productos/nuevo" element={<AdminNuevoProducto />} />
       </Routes>
 
-      <Footer />
+      {/* Solo renderiza el Footer y ModalCarrito fuera de la administración */}
+      {!esAdmin && <Footer />}
 
-      <ModalCarrito
-        show={showCart}
-        handleClose={handleCloseCart}
-      />
+      {!esAdmin && (
+        <ModalCarrito
+          show={showCart}
+          handleClose={handleCloseCart}
+        />
+      )}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

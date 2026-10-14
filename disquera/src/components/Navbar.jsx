@@ -1,17 +1,20 @@
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCarrito } from '../context/CarritoContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export const Navbar = ({ handleShowCart }) => {
   const navigate = useNavigate();
   
-  // Obtenemos el usuario del localStorage
-  const usuarioGuardado = JSON.parse(localStorage.getItem('user'));
-  const isAdmin = usuarioGuardado && usuarioGuardado.role === 'admin';
-  const isLogged = usuarioGuardado !== null;
+  // 1. Obtener estado del carrito en memoria
+  const { obtenerTotalItems } = useCarrito();
+  
+  // 2. Obtener estado de autenticación en memoria (sin localStorage)
+  const { usuario, isLogged, isAdmin, logoutUsuario } = useAuth();
 
   const handleCerrarSesion = () => {
-    localStorage.removeItem('user');
+    logoutUsuario();
     navigate('/');
-    window.location.reload();
   };
 
   return (
@@ -42,18 +45,24 @@ export const Navbar = ({ handleShowCart }) => {
           <div className="d-flex align-items-center gap-3 ms-auto">
             {isLogged ? (
               <>
-                <span className="text-light small">Hola, <b>{usuarioGuardado.email}</b></span>
-                <button onClick={handleCerrarSesion} className="btn btn-outline-danger btn-sm">Cerrar Sesión</button>
+                <span className="text-light small">
+                  Hola, <b>{usuario?.nombre || usuario?.email}</b>
+                </span>
+                <button onClick={handleCerrarSesion} className="btn btn-outline-danger btn-sm">
+                  Cerrar Sesión
+                </button>
               </>
             ) : (
               <>
-                <Link className="nav-link text-warning fw-bold" to="/login"><i className="bi bi-person-circle"></i> Iniciar Sesión</Link>
+                <Link className="nav-link text-warning fw-bold" to="/login">
+                  <i className="bi bi-person-circle"></i> Iniciar Sesión
+                </Link>
                 <Link className="nav-link text-light" to="/registro">Registrarse</Link>
               </>
             )}
 
             <button className="btn btn-outline-warning ms-2" onClick={handleShowCart}>
-              🛒 Carrito (<span id="cart-count">0</span>)
+              🛒 Carrito ({obtenerTotalItems()})
             </button>
           </div>
         </div>

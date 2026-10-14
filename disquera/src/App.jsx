@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -15,8 +14,11 @@ import { Contacto } from './view/Contacto';
 import { Albunes } from './view/Albunes';
 import { Nosotros } from './view/Nosotros';
 import { DetalleBlog } from './view/DetalleBlog';
-// Blog
 import { Blog } from './view/Blog';
+
+// Vistas del Flujo de Compras
+import { Checkout } from './view/Checkout';
+import { PagoExitoso } from './view/PagoExitoso';
 
 // Vistas administrativas
 import { AdminHome } from './view/AdminHome';
@@ -36,51 +38,29 @@ function App() {
 
       <Routes>
         {/* VISTAS PÚBLICAS */}
-
         <Route path="/" element={<Home />} />
-
         <Route path="/login" element={<Login />} />
-
         <Route path="/registro" element={<Registro />} />
-
         <Route path="/productos" element={<Productos />} />
-
-        <Route
-          path="/productos/:id"
-          element={<DetalleProducto />}
-        />
-
+        <Route path="/productos/:id" element={<DetalleProducto />} />
         <Route path="/servicios" element={<Servicios />} />
-
         <Route path="/contacto" element={<Contacto />} />
-
         <Route path="/albunes" element={<Albunes />} />
-
         <Route path="/nosotros" element={<Nosotros />} />
 
         {/* BLOG */}
         <Route path="/blog" element={<Blog />} />
-<Route path="/blog/:id" element={<DetalleBlog />} />
+        <Route path="/blog/:id" element={<DetalleBlog />} />
+
+        {/* FLUJO DE COMPRA */}
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/pago-exitoso" element={<PagoExitoso />} />
 
         {/* VISTAS ADMINISTRATIVAS */}
-
         <Route path="/admin" element={<AdminHome />} />
-
-        <Route
-          path="/admin/usuarios"
-          element={<AdminUsuarios />}
-        />
-
-        <Route
-          path="/admin/productos"
-          element={<AdminProductos />}
-        />
-
-        <Route
-          path="/admin/productos/nuevo"
-          element={<AdminNuevoProducto />}
-        />
-
+        <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+        <Route path="/admin/productos" element={<AdminProductos />} />
+        <Route path="/admin/productos/nuevo" element={<AdminNuevoProducto />} />
       </Routes>
 
       <Footer />

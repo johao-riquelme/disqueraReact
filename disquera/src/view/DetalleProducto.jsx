@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom';
+import { useCarrito } from '../context/CarritoContext.jsx';
 
 const productos = [
   {
@@ -59,6 +60,7 @@ const productos = [
 
 export const DetalleProducto = () => {
   const { id } = useParams();
+  const { agregarAlCarrito } = useCarrito(); // 1. CONEXIÓN CON EL CONTEXTO DEL CARRITO
 
   const producto = productos.find(
     (item) => item.id === Number(id)
@@ -114,8 +116,7 @@ export const DetalleProducto = () => {
           <div className="row g-4 align-items-center">
             <div className="col-12 col-md-6">
               <div
-                className="bg-white rounded-4 p-4 d-flex
-                           align-items-center justify-content-center"
+                className="bg-white rounded-4 p-4 d-flex align-items-center justify-content-center"
                 style={{ minHeight: '300px' }}
               >
                 <img
@@ -152,19 +153,15 @@ export const DetalleProducto = () => {
               </p>
 
               <div className="d-flex flex-column gap-3">
+                {/* 2. BOTÓN HABILITADO Y CONECTADO CON EL CARRITO */}
                 <button
                   type="button"
-                  className="btn btn-warning fw-bold py-3"
-                  disabled
-                  aria-describedby="aviso-carrito"
+                  className="btn btn-warning fw-bold py-3 text-dark"
+                  onClick={() => agregarAlCarrito(producto)}
                 >
                   <i className="bi bi-cart-plus me-2"></i>
                   Agregar al carrito
                 </button>
-
-                <small id="aviso-carrito" className="text-light">
-                  La compra estará disponible próximamente.
-                </small>
 
                 <Link
                   to="/productos"

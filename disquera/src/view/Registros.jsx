@@ -1,23 +1,56 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import { registrarClienteAPI } from '../services/api.js';
 
 export const Registro = () => {
+  const navigate = useNavigate();
+  const { loginUsuario } = useAuth(); // Contexto de sesión en memoria
+
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mensaje, setMensaje] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setMensaje(null);
     
     if (password !== confirmPassword) {
       setMensaje({ texto: 'Las contraseñas no coinciden', tipo: 'danger' });
       return;
     }
 
-    setMensaje({ texto: 'Registro simulado con éxito', tipo: 'success' });
-    console.log('Registrando nuevo usuario:', { nombre, email, password });
+    setCargando(true);
+
+    try {
+      // 1. Enviamos el registro directamente a la base de datos / backend
+      const nuevoCliente = await registrarClienteAPI({
+        nombre,
+        email,
+        password,
+      });
+
+      // 2. Iniciamos sesión en la memoria de la app
+      loginUsuario(nuevoCliente);
+
+      setMensaje({ texto: '¡Cuenta registrada con éxito!', tipo: 'success' });
+
+      // 3. Redirigimos a la tienda de productos
+      setTimeout(() => {
+        navigate('/productos');
+      }, 1000);
+
+    } catch (error) {
+      setMensaje({
+        texto: error.message || 'Error al conectar con la base de datos.',
+        tipo: 'danger',
+      });
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -32,7 +65,9 @@ export const Registro = () => {
                 
                 <form id="form-registro" onSubmit={handleSubmit}>
                   <div className="mb-3 text-start">
-                    <label htmlFor="nombreRegistro" className="form-label text-warning">Nombre / Nombre Artístico</label>
+                    <label htmlFor="nombreRegistro" className="form-label text-warning">
+                      Nombre / Nombre Artístico
+                    </label>
                     <input 
                       type="text" 
                       className="form-control bg-dark text-light border-secondary" 
@@ -43,8 +78,11 @@ export const Registro = () => {
                       onChange={(e) => setNombre(e.target.value)}
                     />
                   </div>
+
                   <div className="mb-3 text-start">
-                    <label htmlFor="emailRegistro" className="form-label text-warning">Correo Electrónico</label>
+                    <label htmlFor="emailRegistro" className="form-label text-warning">
+                      Correo Electrónico
+                    </label>
                     <input 
                       type="email" 
                       className="form-control bg-dark text-light border-secondary" 
@@ -55,8 +93,11 @@ export const Registro = () => {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+
                   <div className="mb-3 text-start">
-                    <label htmlFor="passRegistro" className="form-label text-warning">Contraseña</label>
+                    <label htmlFor="passRegistro" className="form-label text-warning">
+                      Contraseña
+                    </label>
                     <input 
                       type="password" 
                       className="form-control bg-dark text-light border-secondary" 
@@ -67,8 +108,11 @@ export const Registro = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+
                   <div className="mb-4 text-start">
-                    <label htmlFor="confirmPassRegistro" className="form-label text-warning">Confirmar Contraseña</label>
+                    <label htmlFor="confirmPassRegistro" className="form-label text-warning">
+                      Confirmar Contraseña
+                    </label>
                     <input 
                       type="password" 
                       className="form-control bg-dark text-light border-secondary" 
@@ -86,11 +130,20 @@ export const Registro = () => {
                     </div>
                   )}
 
-                  <button type="submit" className="btn btn-warning w-100 fw-bold py-2 mb-3 text-dark">REGISTRARSE</button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-warning w-100 fw-bold py-2 mb-3 text-dark"
+                    disabled={cargando}
+                  >
+                    {cargando ? 'REGISTRANDO EN BD...' : 'REGISTRARSE'}
+                  </button>
                 </form>
 
                 <p className="mb-0 text-light small">
-                  ¿Ya tienes cuenta? <Link to="/login" className="text-warning fw-bold text-decoration-none">Inicia sesión</Link>
+                  ¿Ya tienes cuenta?{' '}
+                  <Link to="/login" className="text-warning fw-bold text-decoration-none">
+                    Inicia sesión
+                  </Link>
                 </p>
               </div>
             </div>

@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { AdminSidebar } from '../components/AdminSidebar';
 
 export const AdminHome = () => {
@@ -8,27 +7,21 @@ export const AdminHome = () => {
         <AdminSidebar />
 
         <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          {/* ENCABEZADO SUPERIOR */}
           <div className="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom border-secondary">
             <h1 className="h3 gold-title fw-bold m-0">¡Bienvenido, Administrador!</h1>
             
-            <div className="d-flex align-items-center gap-2">
-              <Link to="/" className="btn btn-warning fw-bold text-dark rounded-pill px-3 py-1 d-flex align-items-center gap-2">
-                <i className="bi bi-house-door-fill"></i> Ver Sitio Web
-              </Link>
-
-              <span className="badge bg-outline-warning border border-warning text-warning px-3 py-2 rounded-pill">
-                <i className="bi bi-person-circle me-1"></i> Admin Online
-              </span>
-            </div>
+            <span className="badge bg-outline-warning border border-warning text-warning px-3 py-2 rounded-pill">
+              <i className="bi bi-person-circle me-1"></i> Admin Online
+            </span>
           </div>
 
-          {/* TARJETAS RESUMEN */}
+          {/* TARJETAS RESUMEN (KPIs) */}
           <div className="row g-4 mb-5">
             <div className="col-12 col-sm-6 col-xl-3">
               <div className="card bg-black text-light border-secondary shadow-sm rounded-4">
                 <div className="card-body d-flex align-items-center justify-content-between">
                   <div>
-                    {/* Texto en blanco brillante */}
                     <span className="text-white fs-7">Ventas Totales</span>
                     <h3 className="gold-title fw-bold m-0">$12,450 USD</h3>
                   </div>
@@ -85,7 +78,6 @@ export const AdminHome = () => {
           <div className="p-5 bg-black rounded-4 border border-secondary text-center shadow">
             <i className="bi bi-music-note-beamed text-warning display-3 mb-3 d-block"></i>
             <h3 className="gold-title fw-bold">Panel de Control The Reyes Records</h3>
-            {/* Texto en blanco brillante */}
             <p className="text-white max-w-md mx-auto fs-6 mt-2">
               Gestiona el catálogo de productos, revisa las métricas de usuarios y mantén actualizado tu eCommerce desde este panel centralizado.
             </p>

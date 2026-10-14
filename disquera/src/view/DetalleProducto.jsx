@@ -1,72 +1,69 @@
+
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext.jsx';
-
-const productos = [
-  {
-    id: 1,
-    nombre: 'Neumann U 87 Ai',
-    categoria: 'Micrófonos',
-    precio: 3750,
-    imagen: '/micro/micro1.jpg',
-    descripcion:
-      'Micrófono de estudio para voces principales, locución e instrumentos. Cuenta con tres patrones polares: cardioide, omnidireccional y figura de ocho.',
-  },
-  {
-    id: 2,
-    nombre: 'AKG C414 XLII',
-    categoria: 'Micrófonos',
-    precio: 1299,
-    imagen: '/micro/micro2.jpg',
-    descripcion:
-      'Micrófono multipatrón para grabación de pianos, guitarras acústicas, coros y baterías.',
-  },
-  {
-    id: 3,
-    nombre: 'Telefunken TF51',
-    categoria: 'Micrófonos',
-    precio: 1895,
-    imagen: '/micro/micro3.jpg',
-    descripcion:
-      'Micrófono para grabación de voces principales, guitarras acústicas, mandolinas y baterías.',
-  },
-  {
-    id: 4,
-    nombre: 'Manley Reference Cardioid',
-    categoria: 'Micrófonos',
-    precio: 2999,
-    imagen: '/micro/micro4.jpg',
-    descripcion:
-      'Micrófono para voces principales en producciones de pop, R&B, rap y música urbana.',
-  },
-  {
-    id: 5,
-    nombre: 'Apollo Twin X Gen 2',
-    categoria: 'Interfaces de audio',
-    precio: 2899,
-    imagen: '/interfaces/interfaz1.jpg',
-    descripcion:
-      'Interfaz de audio de escritorio para grabación y producción musical.',
-  },
-  {
-    id: 6,
-    nombre: 'Apogee Symphony Desktop',
-    categoria: 'Interfaces de audio',
-    precio: 1499,
-    imagen: '/interfaces/interfaz2.jpg',
-    descripcion:
-      'Interfaz de audio que combina conversión de sonido de alta calidad con un formato de escritorio.',
-  },
-];
+import { obtenerProductoPorIdAPI } from '../services/api.js';
 
 export const DetalleProducto = () => {
   const { id } = useParams();
-  const { agregarAlCarrito } = useCarrito(); // 1. CONEXIÓN CON EL CONTEXTO DEL CARRITO
+  const { agregarAlCarrito } = useCarrito();
 
-  const producto = productos.find(
-    (item) => item.id === Number(id)
-  );
+  const [producto, setProducto] = useState(null);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+  useEffect(() => {
+    let activo = true;
 
-  if (!producto) {
+    const cargarProducto = async () => {
+      setCargando(true);
+      setError('');
+      setProducto(null);
+
+      try {
+        const datos = await obtenerProductoPorIdAPI(id);
+
+        if (activo) {
+          setProducto(datos);
+        }
+      } catch (err) {
+        console.error('Error al cargar el producto:', err);
+
+        if (activo) {
+          setError(
+            'El producto no existe o no está disponible.'
+          );
+        }
+      } finally {
+        if (activo) {
+          setCargando(false);
+        }
+      }
+    };
+    cargarProducto();
+    return () => {
+      activo = false;
+    };
+  }, [id]);
+  const formatearPrecio = (precio) => {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+    }).format(precio);
+  };
+
+  if (cargando) {
+    return (
+      <main className="fondo-hero min-vh-100 py-5">
+        <div className="container pt-5 mt-4 text-center">
+          <h1 className="gold-title fw-bold">
+            Cargando producto...
+          </h1>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !producto) {
     return (
       <main className="fondo-hero min-vh-100 py-5">
         <div className="container pt-5 mt-4 text-center">
@@ -75,10 +72,14 @@ export const DetalleProducto = () => {
           </h1>
 
           <p className="text-light">
-            El producto que buscas no está disponible en el catálogo.
+            {error ||
+              'El producto que buscas no está disponible en el catálogo.'}
           </p>
 
-          <Link to="/productos" className="btn btn-warning fw-bold">
+          <Link
+            to="/productos"
+            className="btn btn-warning fw-bold"
+          >
             Volver a productos
           </Link>
         </div>
@@ -89,8 +90,13 @@ export const DetalleProducto = () => {
   return (
     <main className="fondo-hero min-vh-100 py-5">
       <div className="container pt-5 mt-4">
-        <nav aria-label="Ruta de navegación" className="mb-4">
+
+        <nav
+          aria-label="Ruta de navegación"
+          className="mb-4"
+        >
           <ol className="breadcrumb">
+
             <li className="breadcrumb-item">
               <Link to="/" className="text-warning">
                 Inicio
@@ -109,11 +115,13 @@ export const DetalleProducto = () => {
             >
               {producto.nombre}
             </li>
+
           </ol>
         </nav>
 
         <div className="rr rounded-4 border-gold p-3 p-md-5 shadow-lg">
           <div className="row g-4 align-items-center">
+
             <div className="col-12 col-md-6">
               <div
                 className="bg-white rounded-4 p-4 d-flex align-items-center justify-content-center"
@@ -132,8 +140,13 @@ export const DetalleProducto = () => {
             </div>
 
             <div className="col-12 col-md-6 text-light">
+
               <span className="badge bg-warning text-dark mb-3">
-                {producto.categoria}
+                {producto.categoria === 'microfono'
+                  ? 'Micrófonos'
+                  : producto.categoria === 'interfaz'
+                  ? 'Interfaces de audio'
+                  : producto.categoria}
               </span>
 
               <h1 className="gold-title fw-bold mb-3">
@@ -145,22 +158,20 @@ export const DetalleProducto = () => {
               </p>
 
               <p className="gold-title fs-2 fw-bold mb-4">
-                {new Intl.NumberFormat('es-CL', {
-                  style: 'currency',
-                  currency: 'USD',
-                  currencyDisplay: 'code',
-                }).format(producto.precio)}
+                {formatearPrecio(producto.precio)}
               </p>
-
               <div className="d-flex flex-column gap-3">
-                {/* 2. BOTÓN HABILITADO Y CONECTADO CON EL CARRITO */}
+
                 <button
                   type="button"
                   className="btn btn-warning fw-bold py-3 text-dark"
                   onClick={() => agregarAlCarrito(producto)}
+                  disabled={producto.stock <= 0}
                 >
                   <i className="bi bi-cart-plus me-2"></i>
-                  Agregar al carrito
+                  {producto.stock > 0
+                    ? 'Agregar al carrito'
+                    : 'Sin stock'}
                 </button>
 
                 <Link
@@ -170,8 +181,10 @@ export const DetalleProducto = () => {
                   <i className="bi bi-arrow-left me-2"></i>
                   Volver al catálogo
                 </Link>
+
               </div>
             </div>
+
           </div>
         </div>
       </div>

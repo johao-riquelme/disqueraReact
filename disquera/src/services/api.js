@@ -1,68 +1,182 @@
-const API_URL = 'http://localhost:8080/api';
+const API_URL = "http://localhost:8081/api"
 
-// 1. Obtener Catálogo de Productos
+async function peticion(ruta, opciones = {}) {
+  let respuesta;
+
+  try {
+    respuesta = await fetch(`${API_URL}${ruta}`, {
+      ...opciones,
+
+      credentials: "include",
+
+      headers: {
+        "Content-Type": "application/json",
+        ...opciones.headers,
+      },
+    });
+  } catch {
+    throw new Error(
+      "No se pudo conectar con Spring Boot. Revisa que el backend esté funcionando en el puerto 8081."
+    );
+  }
+
+  const texto = await respuesta.text();
+
+  let datos = null;
+
+  if (texto) {
+    try {
+      datos = JSON.parse(texto);
+    } catch {
+      datos = texto;
+    }
+  }
+
+  if (!respuesta.ok) {
+    const mensaje =
+      typeof datos === "object" && datos !== null
+        ? datos.mensaje ||
+          datos.detalle ||
+          datos.detail ||
+          datos.message ||
+          datos.error
+        : datos;
+
+    const error = new Error(
+      mensaje || `Error HTTP ${respuesta.status}`
+    );
+
+    error.status = respuesta.status;
+
+    throw error;
+  }
+
+  return datos;
+}
+
 export const obtenerProductosAPI = async () => {
-  try {
-    const response = await fetch(`${API_URL}/productos`);
-    if (!response.ok) throw new Error('Error al obtener los productos');
-    return await response.json();
-  } catch (error) {
-    // Si el backend aún no está activo, retorna un arreglo vacío para evitar caídas
-    return [];
-  }
+  return peticion("/productos");
 };
 
-// 2. Autenticación / Login
+export const obtenerProductoPorIdAPI = async (id) => {
+  return peticion(`/productos/${id}`);
+};
+
 export const loginAPI = async (credenciales) => {
-  try {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credenciales),
-    });
+  return peticion("/usuarios/login", {
+    method: "POST",
 
-    if (!response.ok) throw new Error('Credenciales inválidas');
-    return await response.json();
-  } catch (error) {
-    // Modo local / prueba en memoria si el backend no responde
-    return {
-      nombre: 'Usuario Prueba',
-      email: credenciales.email,
-      role: credenciales.email.includes('admin') ? 'admin' : 'cliente',
-    };
-  }
+    body: JSON.stringify({
+      correo: credenciales.correo ?? credenciales.email,
+
+      contrasena:
+        credenciales.contrasena ?? credenciales.password,
+    }),
+  });
 };
 
-// 3. Registro de Usuario
-export const registrarClienteAPI = async (datosCliente) => {
-  try {
-    const response = await fetch(`${API_URL}/auth/registro`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datosCliente),
-    });
+export const registrarClienteAPI = async (cliente) => {
+  return peticion("/usuarios/registro", {
+    method: "POST",
 
-    if (!response.ok) throw new Error('Error al registrar usuario');
-    return await response.json();
-  } catch (error) {
-    // Modo local / prueba en memoria si el backend no responde
-    return { mensaje: 'Usuario registrado exitosamente (Modo Local)', ...datosCliente };
-  }
+    body: JSON.stringify({
+      nombre: cliente.nombre,
+      apellido: cliente.apellido,
+
+      correo: cliente.correo ?? cliente.email,
+
+      contrasena:
+        cliente.contrasena ?? cliente.password,
+
+      telefono: cliente.telefono ?? "",
+      direccion: cliente.direccion ?? "",
+    }),
+  });
 };
 
-// 4. Crear Pedido
 export const crearPedidoAPI = async (ordenData) => {
-  try {
-    const response = await fetch(`${API_URL}/pedidos`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(ordenData),
-    });
+  return peticion("/pedidos", {
+    method: "POST",
+    body: JSON.stringify(ordenData),
+  });
+};
 
-    if (!response.ok) throw new Error('Error al procesar el pedido');
-    return await response.json();
+export const obtenerMisComprasAPI = async () => {
+  return peticion("/pedidos/mis-compras");
+};
+
+
+export const obtenerSesionAPI = async () => {
+  try {
+    return await peticion("/usuarios/sesion");
   } catch (error) {
-    // Modo local / prueba en memoria si el backend no responde
-    return { idOrden: `ORD-LOCAL-${Date.now()}` };
+    if (error.status === 401 || error.status === 403) {
+      return null;
+    }
+
+    throw error;
   }
+};
+
+export const cerrarSesionAPI = async () => {
+  return peticion("/usuarios/logout", {
+    method: "POST",
+  });
+};
+
+export const obtenerCsrfAPI = async () => {
+  const datos = await peticion("/csrf");
+
+  if (!datos?.token || !datos?.headerName) {
+    throw new Error(
+      "Spring Boot no entregó un token CSRF válido."
+    );
+  }
+
+  return datos;
+};
+
+async function peticionAdmin(ruta, metodo, datos = null) {
+
+  const csrf = await obtenerCsrfAPI();
+
+  const opciones = {
+    method: metodo,
+
+    headers: {
+      [csrf.headerName]: csrf.token,
+    },
+  };
+
+  if (datos !== null) {
+    opciones.body = JSON.stringify(datos);
+  }
+
+  return peticion(ruta, opciones);
+}
+
+
+export const crearProductoAPI = async (producto) => {
+  return peticionAdmin(
+    "/productos",
+    "POST",
+    producto
+  );
+};
+
+export const actualizarProductoAPI = async (
+  id,
+  producto
+) => {
+  return peticionAdmin(
+    `/productos/${id}`,
+    "PUT",
+    producto
+  );
+};
+export const desactivarProductoAPI = async (id) => {
+  return peticionAdmin(
+    `/productos/${id}`,
+    "DELETE"
+  );
 };

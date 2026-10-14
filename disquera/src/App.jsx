@@ -1,9 +1,15 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation
+} from 'react-router-dom';
 
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { ModalCarrito } from './components/ModalCarrito';
+
 import { Home } from './view/Home';
 import { Login } from './view/Login';
 import { Productos } from './view/Productos';
@@ -16,39 +22,50 @@ import { Nosotros } from './view/Nosotros';
 import { DetalleBlog } from './view/DetalleBlog';
 import { Blog } from './view/Blog';
 
-// Vistas del Flujo de Compras
+// Vistas del flujo de compras
 import { Checkout } from './view/Checkout';
 import { PagoExitoso } from './view/PagoExitoso';
+
+// NUEVA VISTA: HISTORIAL DE COMPRAS
+import { MisCompras } from './view/MisCompras';
 
 // Vistas administrativas
 import { AdminHome } from './view/AdminHome';
 import { AdminUsuarios } from './view/AdminUsuarios';
 import { AdminProductos } from './view/AdminProductos';
 import { AdminNuevoProducto } from './view/AdminNuevoProducto';
+import { AdminEditarProducto } from './view/AdminEditarProducto';
 
-// Componente para aplicar el layout condicional
 function AppContent() {
+
   const [showCart, setShowCart] = useState(false);
   const location = useLocation();
 
   const handleCloseCart = () => setShowCart(false);
   const handleShowCart = () => setShowCart(true);
 
-  // Verificamos si la ruta actual empieza por /admin
+  // Detectar las rutas administrativas
   const esAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
-      {/* Solo renderiza el Navbar si NO estamos en una ruta de administración */}
-      {!esAdmin && <Navbar handleShowCart={handleShowCart} />}
+
+      {/* NAVBAR */}
+      {!esAdmin && (
+        <Navbar handleShowCart={handleShowCart} />
+      )}
 
       <Routes>
-        {/* VISTAS PÚBLICAS */}
+
+        {/* VISTAS PUBLICAS */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/productos" element={<Productos />} />
-        <Route path="/productos/:id" element={<DetalleProducto />} />
+        <Route
+          path="/productos/:id"
+          element={<DetalleProducto />}
+        />
         <Route path="/servicios" element={<Servicios />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/albunes" element={<Albunes />} />
@@ -60,18 +77,39 @@ function AppContent() {
 
         {/* FLUJO DE COMPRA */}
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/pago-exitoso" element={<PagoExitoso />} />
+        <Route
+          path="/pago-exitoso"
+          element={<PagoExitoso />}
+        />
+
+        {/* HISTORIAL DE COMPRAS */}
+        <Route
+          path="/mis-compras"
+          element={<MisCompras />}
+        />
 
         {/* VISTAS ADMINISTRATIVAS */}
         <Route path="/admin" element={<AdminHome />} />
-        <Route path="/admin/usuarios" element={<AdminUsuarios />} />
-        <Route path="/admin/productos" element={<AdminProductos />} />
-        <Route path="/admin/productos/nuevo" element={<AdminNuevoProducto />} />
+        <Route
+          path="/admin/usuarios"
+          element={<AdminUsuarios />}
+        />
+        <Route
+          path="/admin/productos"
+          element={<AdminProductos />}
+        />
+        <Route
+          path="/admin/productos/nuevo"
+          element={<AdminNuevoProducto />}
+        />
+        <Route
+          path="/admin/productos/editar/:id"
+          element={<AdminEditarProducto />}
+/>
       </Routes>
-
-      {/* Solo renderiza el Footer y ModalCarrito fuera de la administración */}
+      {/* FOOTER */}
       {!esAdmin && <Footer />}
-
+      {/* CARRITO */}
       {!esAdmin && (
         <ModalCarrito
           show={showCart}
@@ -81,7 +119,6 @@ function AppContent() {
     </>
   );
 }
-
 function App() {
   return (
     <Router>
@@ -89,5 +126,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;

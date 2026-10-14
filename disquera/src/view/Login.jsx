@@ -1,37 +1,52 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext.jsx';
+import { loginAPI } from '../services/api.js';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState(null);
+  const [cargando, setCargando] = useState(false);
+
   const navigate = useNavigate();
+  const { loginUsuario } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setMensaje(null);
+    setCargando(true);
 
-    // Simulación: Si el correo incluye "admin", se le asigna el rol de administrador
-    const esAdmin = email.toLowerCase().includes('admin');
+    try {
+      // Comprobar correo y contraseña en Spring Boot
+      const usuario = await loginAPI({
+        correo: email.trim(),
+        contrasena: password
+      });
 
-    const usuarioLogueado = {
-      email,
-      role: esAdmin ? 'admin' : 'user'
-    };
+      // Actualizar los datos del usuario en React
+      loginUsuario(usuario);
 
-    // Guardamos en el almacenamiento local del navegador
-    localStorage.setItem('user', JSON.stringify(usuarioLogueado));
+      setMensaje({
+        texto: '¡Inicio de sesión exitoso!',
+        tipo: 'success'
+      });
 
-    setMensaje({ texto: '¡Inicio de sesión exitoso!', tipo: 'success' });
-
-    // Redirigir según el rol o al home
-    setTimeout(() => {
-      if (esAdmin) {
-        navigate('/admin'); // Redirigirá al panel de administración
+      // Redirigir según el rol recibido del backend
+      if (usuario.rol === 'admin') {
+        navigate('/admin');
       } else {
-        navigate('/'); // Redirigirá al home normal
+        navigate('/');
       }
-      window.location.reload(); // Recarga para actualizar el Navbar
-    }, 1000);
+
+    } catch (error) {
+      setMensaje({
+        texto: error.message || 'Correo o contraseña incorrectos',
+        tipo: 'danger'
+      });
+    } finally {
+      setCargando(false);
+    }
   };
 
   return (
@@ -57,6 +72,7 @@ export const Login = () => {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
+
                   <div className="mb-4 text-start">
                     <label htmlFor="passLogin" className="form-label text-warning">Contraseña</label>
                     <input 
@@ -76,7 +92,13 @@ export const Login = () => {
                     </div>
                   )}
 
-                  <button type="submit" className="btn btn-warning w-100 fw-bold py-2 mb-3 text-dark">INGRESAR</button>
+                  <button
+                    type="submit"
+                    className="btn btn-warning w-100 fw-bold py-2 mb-3 text-dark"
+                    disabled={cargando}
+                  >
+                    {cargando ? 'INGRESANDO...' : 'INGRESAR'}
+                  </button>
                 </form>
 
                 <p className="mb-0 text-light small">

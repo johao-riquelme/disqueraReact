@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AdminSidebar } from '../components/AdminSidebar';
 
 export const AdminNuevoProducto = () => {
   const navigate = useNavigate();
 
-  // Estados locales para los campos del formulario
   const [codigo, setCodigo] = useState('');
   const [nombre, setNombre] = useState('');
   const [descripcion, setDescripcion] = useState('');
@@ -18,13 +18,11 @@ export const AdminNuevoProducto = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación básica
     if (codigo.length < 3) {
       setMensaje({ texto: 'El código de producto debe tener al menos 3 caracteres.', tipo: 'danger' });
       return;
     }
 
-    // Objeto del nuevo producto listo para enviar a la Base de Datos en el futuro
     const nuevoProducto = {
       codigo,
       nombre,
@@ -36,10 +34,9 @@ export const AdminNuevoProducto = () => {
       imagen
     };
 
-    console.log('Producto registrado con éxito:', nuevoProducto);
+    console.log('Producto registrado:', nuevoProducto);
     setMensaje({ texto: '¡Producto guardado exitosamente!', tipo: 'success' });
 
-    // Redirigir al listado de productos de administración tras 1.5 segundos
     setTimeout(() => {
       navigate('/admin/productos');
     }, 1500);
@@ -48,48 +45,18 @@ export const AdminNuevoProducto = () => {
   return (
     <div className="container-fluid bg-dark text-light min-vh-100">
       <div className="row">
-        {/* BARRA LATERAL DE ADMINISTRACIÓN */}
-        <nav className="col-md-3 col-lg-2 d-md-block bg-black sidebar collapse border-end border-secondary min-vh-100 p-3">
-          <div className="position-sticky pt-3">
-            <h4 className="gold-title fw-bold text-center py-3">THE REYES</h4>
-            <ul className="nav flex-column gap-2">
-              <li className="nav-item">
-                <Link className="nav-link text-light" to="/admin">
-                  <i className="bi bi-speedometer2 me-2"></i> Dashboard
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning fw-bold" to="/admin/productos">
-                  <i className="bi bi-box-seam me-2"></i> Productos
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-light" to="/admin/usuarios">
-                  <i className="bi bi-people me-2"></i> Usuarios
-                </Link>
-              </li>
-              <hr className="border-secondary" />
-              <li className="nav-item">
-                <Link className="nav-link text-danger" to="/">
-                  <i className="bi bi-box-arrow-left me-2"></i> Salir al Sitio
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
+        <AdminSidebar />
 
-        {/* CONTENIDO PRINCIPAL */}
-        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-5">
-          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom border-secondary">
-            <h1 className="h2 gold-title fw-bold">Nuevo Producto</h1>
+        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          <div className="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom border-secondary">
+            <h1 className="h3 gold-title fw-bold m-0">Nuevo Producto</h1>
             <span className="text-warning fw-bold"><i className="bi bi-person-circle"></i> Administrador</span>
           </div>
 
           <div className="row justify-content-center">
             <div className="col-12 col-lg-8">
-              <div className="card rr text-light border-gold p-4 shadow-lg bg-black">
+              <div className="card text-light border-secondary p-4 shadow-lg bg-black rounded-4">
                 <div className="card-body">
-                  
                   <form onSubmit={handleSubmit}>
                     <div className="mb-3 text-start">
                       <label htmlFor="codigoProd" className="form-label text-warning">Código de Producto (Mínimo 3 caracteres)</label>
@@ -212,11 +179,10 @@ export const AdminNuevoProducto = () => {
                     )}
 
                     <div className="d-flex gap-3">
-                      <button type="submit" className="btn btn-warning w-100 fw-bold py-2 text-dark">GUARDAR PRODUCTO</button>
-                      <Link to="/admin/productos" className="btn btn-outline-secondary w-100 fw-bold py-2 text-decoration-none d-flex align-items-center justify-content-center">CANCELAR</Link>
+                      <button type="submit" className="btn btn-warning w-100 fw-bold py-2 text-dark rounded-3">GUARDAR PRODUCTO</button>
+                      <Link to="/admin/productos" className="btn btn-outline-secondary w-100 fw-bold py-2 text-decoration-none d-flex align-items-center justify-content-center rounded-3">CANCELAR</Link>
                     </div>
                   </form>
-
                 </div>
               </div>
             </div>

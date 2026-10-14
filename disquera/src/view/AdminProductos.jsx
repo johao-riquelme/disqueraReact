@@ -1,22 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Table } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+import { AdminSidebar } from '../components/AdminSidebar';
 
 export const AdminProductos = () => {
   const [productos, setProductos] = useState([]);
 
   useEffect(() => {
-    // Simulación de carga de productos desde la Base de Datos
-    const obtenerProductosFalsos = () => {
-      const dataProductos = [
-        { id: 1, codigo: "PROD-001", nombre: "Polera Oficial The Reyes", categoria: "Ropa", precio: 25, stock: 45 },
-        { id: 2, codigo: "PROD-002", nombre: "Vinilo Edición Coleccionista", categoria: "Música", precio: 40, stock: 12 },
-        { id: 3, codigo: "PROD-003", nombre: "Gorra Snapback Bordada", categoria: "Accesorios", precio: 20, stock: 30 }
-      ];
-      setProductos(dataProductos);
-    };
-
-    obtenerProductosFalsos();
+    const dataProductos = [
+      { id: 1, codigo: "PROD-001", nombre: "Polera Oficial The Reyes", categoria: "Ropa", precio: 25, stock: 45 },
+      { id: 2, codigo: "PROD-002", nombre: "Vinilo Edición Coleccionista", categoria: "Música", precio: 40, stock: 4 },
+      { id: 3, codigo: "PROD-003", nombre: "Gorra Snapback Bordada", categoria: "Accesorios", precio: 20, stock: 30 }
+    ];
+    setProductos(dataProductos);
   }, []);
 
   const handleEliminarProducto = (id) => {
@@ -26,74 +22,54 @@ export const AdminProductos = () => {
   };
 
   return (
-    <div className="container-fluid bg-dark text-light min-vh-100">
-      <div className="row">
-        {/* BARRA LATERAL DE ADMINISTRACIÓN */}
-        <nav className="col-md-3 col-lg-2 d-md-block bg-black sidebar collapse border-end border-secondary min-vh-100 p-3">
-          <div className="position-sticky pt-3">
-            <h4 className="gold-title fw-bold text-center py-3">THE REYES</h4>
-            <ul className="nav flex-column gap-2">
-              <li className="nav-item">
-                <Link className="nav-link text-light" to="/admin">
-                  <i className="bi bi-speedometer2 me-2"></i> Dashboard
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-warning fw-bold" to="/admin/productos">
-                  <i className="bi bi-box-seam me-2"></i> Productos
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link text-light" to="/admin/usuarios">
-                  <i className="bi bi-people me-2"></i> Usuarios
-                </Link>
-              </li>
-              <hr className="border-secondary" />
-              <li className="nav-item">
-                <Link className="nav-link text-danger" to="/">
-                  <i className="bi bi-box-arrow-left me-2"></i> Salir al Sitio
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </nav>
+    <div className="container-fluid bg-dark text-light min-vh-100 p-0 overflow-hidden">
+      <div className="row g-0">
+        {/* Barra lateral aislada */}
+        <AdminSidebar />
 
-        {/* CONTENIDO PRINCIPAL */}
-        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-5">
-          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom border-secondary">
-            <h1 className="h2 gold-title fw-bold">Listado de Productos</h1>
-            <Link to="/admin/productos/nuevo" className="btn btn-warning fw-bold text-dark">
-              <i className="bi bi-plus-circle me-1"></i> NUEVO PRODUCTO
+        {/* Contenido principal despejado */}
+        <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          <div className="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom border-secondary">
+            <div>
+              <h1 className="h3 text-warning fw-bold m-0">Catálogo de Productos</h1>
+              <small className="text-muted">Administra el inventario del sitio</small>
+            </div>
+            <Link to="/admin/productos/nuevo" className="btn btn-warning fw-bold text-dark px-4">
+              <i className="bi bi-plus-lg me-1"></i> NUEVO PRODUCTO
             </Link>
           </div>
 
-          <div className="table-responsive bg-black p-4 rounded border border-secondary shadow-lg">
-            <Table dark striped hover responsive align="middle" className="mb-0">
+          <div className="bg-black p-3 rounded-3 border border-secondary shadow">
+            <Table responsive borderless hover variant="dark" align="middle" className="mb-0">
               <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Nombre</th>
-                  <th>Categoría</th>
-                  <th>Precio</th>
-                  <th>Stock</th>
-                  <th className="text-center">Acciones</th>
+                <tr className="border-bottom border-secondary text-warning">
+                  <th>CÓDIGO</th>
+                  <th>PRODUCTO</th>
+                  <th>CATEGORÍA</th>
+                  <th>PRECIO</th>
+                  <th>STOCK</th>
+                  <th className="text-center">ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
                 {productos.map((prod) => (
-                  <tr key={prod.id}>
-                    <td><code>{prod.codigo}</code></td>
-                    <td className="fw-semibold">{prod.nombre}</td>
-                    <td>{prod.categoria}</td>
-                    <td className="text-warning">${prod.precio} USD</td>
-                    <td>{prod.stock} un.</td>
+                  <tr key={prod.id} className="border-bottom border-secondary">
+                    <td><span className="badge bg-secondary">{prod.codigo}</span></td>
+                    <td className="fw-semibold text-white">{prod.nombre}</td>
+                    <td><span className="badge bg-dark border border-secondary">{prod.categoria}</span></td>
+                    <td className="text-warning fw-bold">${prod.precio} USD</td>
+                    <td>
+                      <span className={`badge ${prod.stock < 10 ? 'bg-danger' : 'bg-success'}`}>
+                        {prod.stock} un.
+                      </span>
+                    </td>
                     <td className="text-center">
                       <Button 
                         variant="outline-danger" 
                         size="sm"
                         onClick={() => handleEliminarProducto(prod.id)}
                       >
-                        <i className="bi bi-trash"></i> Eliminar
+                        <i className="bi bi-trash"></i>
                       </Button>
                     </td>
                   </tr>

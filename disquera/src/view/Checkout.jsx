@@ -27,6 +27,17 @@ export const Checkout = () => {
 
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+  const obtenerTipoArticulo = (item) => {
+    return item.tipo === 'plan'
+      ? 'plan'
+      : 'producto';
+  };
+
+  const obtenerClaveArticulo = (item) => {
+    return item.claveCarrito ||
+      `${obtenerTipoArticulo(item)}-${item.id}`;
+  };
+
   const handleChange = (e) => {
 
     const { name, value } = e.target;
@@ -37,23 +48,20 @@ export const Checkout = () => {
     }));
 
   };
-
   const handleProcesarPago = async (e) => {
-
     e.preventDefault();
-
     if (carrito.length === 0 || cargando) {
       return;
     }
-
     setCargando(true);
     setError(null);
 
     try {
 
-      const productosPedido = carrito.map((producto) => ({
-        id: producto.id,
-        cantidad: producto.cantidad,
+      const itemsPedido = carrito.map((item) => ({
+        id: item.id,
+        cantidad: item.cantidad,
+        tipo: obtenerTipoArticulo(item),
       }));
 
       const ordenData = {
@@ -61,10 +69,9 @@ export const Checkout = () => {
           ...formData,
           metodoPago: 'simulado',
         },
-        items: productosPedido,
+        items: itemsPedido,
         total: obtenerTotalPrecio(),
       };
-
       const respuestaBD = await crearPedidoAPI(ordenData);
 
       if (
@@ -76,6 +83,7 @@ export const Checkout = () => {
           'No se pudo confirmar el resultado de la compra.'
         );
       }
+
       const ordenConfirmada = {
 
         idOrden: respuestaBD.id,
@@ -95,6 +103,7 @@ export const Checkout = () => {
       };
 
       vaciarCarrito();
+
       navigate('/pago-exitoso', {
         state: {
           orden: ordenConfirmada,
@@ -103,6 +112,11 @@ export const Checkout = () => {
       });
 
     } catch (err) {
+
+      console.error(
+        'Error al procesar el pedido:',
+        err
+      );
 
       setError(
         err.message ||
@@ -114,24 +128,33 @@ export const Checkout = () => {
       setCargando(false);
 
     }
+
   };
+
   if (carrito.length === 0) {
+
     return (
       <div className="fondo-hero min-vh-100 py-5 text-center text-light d-flex align-items-center justify-content-center">
+
         <div className="container pt-5">
+
           <h2 className="gold-title mb-3">
             Tu carrito está vacío
           </h2>
 
           <p className="text-muted">
-            Agrega productos desde la tienda antes de realizar el pago.
+            Agrega productos o planes desde la tienda
+            antes de realizar el pago.
           </p>
+
         </div>
+
       </div>
     );
-  }
 
+  }
   return (
+
     <main className="fondo-hero min-vh-100 py-5 text-light">
 
       <div className="container pt-5">
@@ -141,7 +164,7 @@ export const Checkout = () => {
         </h2>
 
         {error && (
-          <div className="alert alert-danger mb-4">
+          <div className="alert alert-danger mb-4" role="alert">
             {error}
           </div>
         )}
@@ -261,7 +284,6 @@ export const Checkout = () => {
                     />
 
                   </div>
-
                 </div>
 
                 <button
@@ -274,12 +296,10 @@ export const Checkout = () => {
                     : 'Confirmar y Pagar'
                   }
                 </button>
-
               </form>
-
             </div>
-
           </div>
+
           <div className="col-lg-5">
 
             <div className="rr text-light border-gold p-4 rounded-4 shadow-lg">
@@ -293,7 +313,7 @@ export const Checkout = () => {
                 {carrito.map((item) => (
 
                   <li
-                    key={item.id}
+                    key={obtenerClaveArticulo(item)}
                     className="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center px-0 border-secondary"
                   >
 
@@ -307,22 +327,32 @@ export const Checkout = () => {
                         Cantidad: {item.cantidad}
                       </small>
 
+                      {item.tipo === 'plan' && (
+
+                        <div>
+
+                          <small className="text-warning">
+                            Plan de servicio
+                          </small>
+
+                        </div>
+
+                      )}
+
                     </div>
 
                     <span className="gold-title fw-bold">
-                      ${(item.precio * item.cantidad).toLocaleString('es-CL')}
+                      ${(Number(item.precio) * item.cantidad).toLocaleString('es-CL')}
                     </span>
 
                   </li>
-
                 ))}
-
               </ul>
-
               <div className="d-flex justify-content-between align-items-center fs-5 fw-bold border-top border-secondary pt-3">
 
-                <span>Total:</span>
-
+                <span>
+                  Total:
+                </span>
                 <span className="gold-title">
                   ${obtenerTotalPrecio().toLocaleString('es-CL')} CLP
                 </span>

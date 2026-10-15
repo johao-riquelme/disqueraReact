@@ -58,24 +58,11 @@ Flujo de ejemplo: contratación del Plan Básico
 5. React muestra la pantalla de compra exitosa y vacía el carrito.
 6. Con la sesión iniciada, Mis Compras obtiene el pedido desde la API y lo muestra en Planes Contratados.
 4. Estructura principal del código
-disquera/
-├── public/                   # Imágenes de productos, planes y del sitio
-├── src/
-│   ├── components/           # Navbar, Footer, ModalCarrito, AdminSidebar
-│   ├── context/
-│   │   ├── AuthContext.jsx    # Estado de autenticación
-│   │   └── CarritoContext.jsx # Productos y planes en el carrito
-│   ├── services/
-│   │   └── api.js             # Solicitudes HTTP a Spring Boot
-│   ├── view/                 # Vistas React y pruebas .test.jsx
-│   ├── App.jsx               # Rutas
-│   ├── main.jsx              # Inicialización y providers
-│   └── index.css             # Diseño general
-├── package.json
-└── README.md
+<img width="556" height="301" alt="image" src="https://github.com/user-attachments/assets/f2101553-8a85-47e2-bc11-4bb8da1fd903" />
+
 Tecnologías: JavaScript/JSX, React 19, Vite 8, React Router 7, Bootstrap 5, React Bootstrap, Bootstrap Icons, Context API, Fetch API; para pruebas, Vitest 5, React Testing Library, jsdom y jest-dom.
 5. Principales rutas para la demostración
-Ruta	Vista
+Ruta	VistaS
 /	Inicio
 /productos	Catálogo y filtros
 /productos/:id	Detalle de producto

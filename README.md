@@ -5,9 +5,9 @@ Módulo: Desarrollo Fullstack II
 1. ¿Qué es THE REYES RECORDS?
 THE REYES RECORDS es una aplicación web que reúne una tienda de equipos para producción musical y una oferta de planes de servicios de disquera. El cliente puede revisar productos, agregar artículos al carrito, realizar una compra simulada y consultar sus pedidos. También desarrollamos pantallas para que un administrador gestione el catálogo.
 El objetivo de este frontend fue pasar de páginas con contenido principalmente visual a una aplicación React conectada a un backend real, manteniendo el diseño de estudio musical con colores negro y dorado. El frontend no accede directamente a la base de datos: solicita la información a una API REST hecha con Spring Boot.
-Alcance: proyecto académico. Los pagos se simulan; no se realiza ningún cobro bancario ni se reciben datos de tarjetas. Este README describe las funciones trabajadas y comprobadas durante el desarrollo; no equivale a certificar todos los casos posibles.
+Alcance: proyecto académico. Los pagos se simulan; no se realiza ningún cobro bancario ni se reciben datos de tarjetas. Este README describe las funciones trabajadas y comprobadas durante el desarrollo; no equivale a certificar todos los casos posibles
 
-2. Resumen para el docente: ¿qué implementamos?
+¿qué implementamos?
 Área	Desarrollo realizado	Cómo se puede demostrar
 React y navegación	Componentes JSX, React Router y vistas públicas/administrativas	Recorrer Inicio, Productos, Servicios, Checkout y Administración
 Catálogo	Productos obtenidos desde Spring Boot y Neon; filtros Todos / Micrófonos / Interfaces	Cambiar filtros y abrir el detalle de un producto

@@ -142,9 +142,9 @@ export const AdminNuevoProducto = () => {
       }
 
       setMensaje({
-        texto: `¡Producto guardado exitosamente en Neon! ID: ${productoGuardado.id}`,
-        tipo: 'success'
-      });
+  texto: `¡Producto guardado exitosamente en MySQL! ID: ${productoGuardado.id}`,
+  tipo: 'success'
+});
       navigate('/admin/productos', {
         replace: true
       });
@@ -159,7 +159,7 @@ export const AdminNuevoProducto = () => {
       setMensaje({
         texto:
           error.message ||
-          'No se pudo guardar el producto en Neon.',
+          'No se pudo guardar el producto en la base de datos.',
         tipo: 'danger'
       });
 

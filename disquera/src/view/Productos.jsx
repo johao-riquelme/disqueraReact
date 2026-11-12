@@ -39,9 +39,9 @@ export const Productos = () => {
       } catch (err) {
 
         console.error(
-          'Error al cargar productos desde Neon:',
-          err
-        );
+  'Error al cargar productos desde MySQL:',
+  err
+);
 
         if (activo) {
           setError(
@@ -123,8 +123,8 @@ export const Productos = () => {
           </h3>
 
           <p className="text-muted">
-            Asegúrate de que Spring Boot y Neon estén disponibles.
-          </p>
+  Asegúrate de que Spring Boot y MySQL estén funcionando.
+</p>
 
         </div>
 

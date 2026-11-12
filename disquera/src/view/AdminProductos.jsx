@@ -17,10 +17,6 @@ export const AdminProductos = () => {
   const [mensaje, setMensaje] = useState('');
   const [productoProcesando, setProductoProcesando] = useState(null);
 
-  // ==========================================
-  // CONSULTAR PRODUCTOS DESDE NEON
-  // ==========================================
-
   useEffect(() => {
 
     let activo = true;
@@ -45,7 +41,7 @@ export const AdminProductos = () => {
         if (activo) {
           setError(
             err.message ||
-            'No se pudieron cargar los productos desde Neon.'
+            'No se pudieron cargar los productos desde MySQL.'
           );
         }
 
@@ -94,10 +90,6 @@ export const AdminProductos = () => {
 
   };
 
-  // ==========================================
-  // DESACTIVAR PRODUCTO EN NEON
-  // ==========================================
-
   const handleEliminarProducto = async (id) => {
 
     if (productoProcesando !== null) {
@@ -106,7 +98,7 @@ export const AdminProductos = () => {
 
     const confirmar = window.confirm(
       '¿Estás seguro de que deseas desactivar este producto?\n\n' +
-      'Dejará de aparecer en el catálogo, pero seguirá guardado en Neon.'
+      'Dejará de aparecer en el catálogo, pero seguirá guardado en la base de datos.'
     );
 
     if (!confirmar) {
@@ -126,7 +118,7 @@ export const AdminProductos = () => {
       );
 
       setMensaje(
-        'Producto desactivado correctamente en Neon.'
+        'Producto desactivado correctamente en MySQL.'
       );
 
     } catch (err) {
@@ -216,7 +208,7 @@ export const AdminProductos = () => {
                 ></div>
 
                 <p className="text-light mt-3 mb-0">
-                  Cargando productos desde Neon...
+                  Cargando productos...
                 </p>
 
               </div>
@@ -373,7 +365,7 @@ export const AdminProductos = () => {
                                   handleEliminarProducto(prod.id)
                                 }
                                 disabled={productoProcesando !== null}
-                                title="Desactivar producto en Neon"
+                                title="Desactivar producto"
                               >
 
                                 <i className="bi bi-trash me-1"></i>

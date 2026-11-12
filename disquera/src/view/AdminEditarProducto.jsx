@@ -225,7 +225,7 @@ export const AdminEditarProducto = () => {
                       ></div>
 
                       <p className="mt-3 text-light">
-                        Cargando producto desde Neon...
+                        Cargando producto...
                       </p>
 
                     </div>

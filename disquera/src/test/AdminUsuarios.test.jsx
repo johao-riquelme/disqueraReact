@@ -2,7 +2,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { AdminUsuarios } from './AdminUsuarios';
+import { AdminUsuarios } from '../view/AdminUsuarios';
 
 describe('AdminUsuarios Component', () => {
   it('debe renderizar los usuarios y el distintivo del Administrador', () => {

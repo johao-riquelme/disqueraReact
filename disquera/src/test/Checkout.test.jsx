@@ -19,7 +19,7 @@ import {
   vi
 } from 'vitest';
 
-import { Checkout } from './Checkout.jsx';
+import { Checkout } from '../view/Checkout.jsx';
 
 const mocks = vi.hoisted(() => ({
   crearPedidoAPI: vi.fn(),

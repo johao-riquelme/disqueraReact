@@ -1,18 +1,18 @@
 // @vitest-environment jsdom
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { DetalleProducto } from './DetalleProducto';
+import { Albunes } from '../view/Albunes';
 import { CarritoProvider } from '../context/CarritoContext';
 import { AuthProvider } from '../context/AuthContext';
 
-describe('DetalleProducto View', () => {
-  it('debe renderizar el detalle del producto seleccionado', () => {
+describe('Albunes View', () => {
+  it('debe renderizar la vista del catálogo de álbumes', () => {
     render(
       <AuthProvider>
         <CarritoProvider>
           <MemoryRouter>
-            <DetalleProducto />
+            <Albunes />
           </MemoryRouter>
         </CarritoProvider>
       </AuthProvider>

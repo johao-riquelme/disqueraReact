@@ -2,19 +2,19 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { AdminNuevoProducto } from './AdminNuevoProducto';
+import { AdminEditarProducto } from '../view/AdminEditarProducto';
 import { AuthProvider } from '../context/AuthContext';
 
-describe('AdminNuevoProducto View', () => {
-  it('debe renderizar el formulario para crear un nuevo producto', () => {
+describe('AdminEditarProducto View', () => {
+  it('debe renderizar el formulario de edición de producto', () => {
     render(
       <AuthProvider>
         <MemoryRouter>
-          <AdminNuevoProducto />
+          <AdminEditarProducto />
         </MemoryRouter>
       </AuthProvider>
     );
 
-    expect(screen.getByText(/Nuevo Producto/i) || screen.getByRole('button')).toBeInTheDocument();
+    expect(screen.getByText(/Editar Producto/i) || screen.getByRole('heading')).toBeInTheDocument();
   });
 });

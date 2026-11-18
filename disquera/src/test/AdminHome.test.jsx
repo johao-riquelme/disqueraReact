@@ -2,7 +2,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { AdminHome } from './AdminHome';
+import { AdminHome } from '../view/AdminHome';
 
 describe('AdminHome Component', () => {
   it('debe mostrar el mensaje de bienvenida y los KPIs', () => {

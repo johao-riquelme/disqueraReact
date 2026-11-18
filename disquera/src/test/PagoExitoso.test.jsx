@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { PagoExitoso } from './PagoExitoso';
+import { PagoExitoso } from '../view/PagoExitoso';
 import { CarritoProvider } from '../context/CarritoContext';
 
 describe('PagoExitoso View', () => {

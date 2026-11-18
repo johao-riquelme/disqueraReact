@@ -2,7 +2,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { AdminProductos } from './AdminProductos';
+import { AdminProductos } from '../view/AdminProductos';
 
 describe('AdminProductos Component', () => {
   it('debe renderizar el título de la vista y el mensaje de carga o productos', async () => {

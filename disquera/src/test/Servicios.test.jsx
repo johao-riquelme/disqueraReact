@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { Servicios } from './Servicios.jsx';
+import { Servicios } from '../view/Servicios.jsx';
 const mocks = vi.hoisted(() => ({
   agregarAlCarrito: vi.fn()
 }));

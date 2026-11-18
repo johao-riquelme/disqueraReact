@@ -2,13 +2,13 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { Blog } from './Blog';
+import { Contacto } from '../view/Contacto';
 
-describe('Blog View', () => {
-  it('debe renderizar la sección de publicaciones o noticias', () => {
+describe('Contacto View', () => {
+  it('debe renderizar la vista de contacto', () => {
     render(
       <MemoryRouter>
-        <Blog />
+        <Contacto />
       </MemoryRouter>
     );
 

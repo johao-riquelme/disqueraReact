@@ -2,17 +2,17 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect } from 'vitest';
-import { Productos } from './Productos';
+import { DetalleProducto } from '../view/DetalleProducto';
 import { CarritoProvider } from '../context/CarritoContext';
 import { AuthProvider } from '../context/AuthContext';
 
-describe('Productos View', () => {
-  it('debe renderizar la grilla de productos de la tienda', () => {
+describe('DetalleProducto View', () => {
+  it('debe renderizar el detalle del producto seleccionado', () => {
     render(
       <AuthProvider>
         <CarritoProvider>
           <MemoryRouter>
-            <Productos />
+            <DetalleProducto />
           </MemoryRouter>
         </CarritoProvider>
       </AuthProvider>

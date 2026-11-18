@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi } from 'vitest';
-import { MisCompras } from './MisCompras.jsx';
+import { MisCompras } from '../view/MisCompras.jsx';
 vi.mock('../context/AuthContext.jsx', () => ({
   useAuth: () => ({
     usuario: {

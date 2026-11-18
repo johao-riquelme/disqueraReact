@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext.jsx';
-import { loginAPI } from '../services/api.js';
+import { loginAPI, loginConGoogleAPI } from '../services/api.js';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,19 +13,18 @@ export const Login = () => {
   const navigate = useNavigate();
   const { loginUsuario } = useAuth();
 
+  // Login tradicional con correo y contraseña
   const handleLogin = async (e) => {
     e.preventDefault();
     setMensaje(null);
     setCargando(true);
 
     try {
-      // Comprobar correo y contraseña en Spring Boot
       const usuario = await loginAPI({
         correo: email.trim(),
         contrasena: password
       });
 
-      // Actualizar los datos del usuario en React
       loginUsuario(usuario);
 
       setMensaje({
@@ -32,16 +32,43 @@ export const Login = () => {
         tipo: 'success'
       });
 
-      // Redirigir según el rol recibido del backend
       if (usuario.rol === 'admin') {
         navigate('/admin');
       } else {
         navigate('/');
       }
-
     } catch (error) {
       setMensaje({
         texto: error.message || 'Correo o contraseña incorrectos',
+        tipo: 'danger'
+      });
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  // Login federado con Google OAuth
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setMensaje(null);
+    setCargando(true);
+
+    try {
+      const usuario = await loginConGoogleAPI(credentialResponse.credential);
+      loginUsuario(usuario);
+
+      setMensaje({
+        texto: '¡Inicio de sesión con Google exitoso!',
+        tipo: 'success'
+      });
+
+      if (usuario.rol === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (error) {
+      setMensaje({
+        texto: error.message || 'Error al autenticar con Google.',
         tipo: 'danger'
       });
     } finally {
@@ -59,6 +86,12 @@ export const Login = () => {
                 <h2 className="gold-title fw-bold mb-3">Iniciar Sesión</h2>
                 <p className="subtitle mb-4">Accede a tu cuenta de The Reyes Records</p>
                 
+                {mensaje && (
+                  <div className={`alert alert-${mensaje.tipo} py-2 mb-3`} role="alert">
+                    {mensaje.texto}
+                  </div>
+                )}
+
                 <form onSubmit={handleLogin}>
                   <div className="mb-3 text-start">
                     <label htmlFor="emailLogin" className="form-label text-warning">Correo Electrónico</label>
@@ -66,7 +99,7 @@ export const Login = () => {
                       type="email" 
                       className="form-control bg-dark text-light border-secondary" 
                       id="emailLogin" 
-                      placeholder="tu@correo.com (o admin@...) " 
+                      placeholder="tu@correo.com (o admin@...)" 
                       required 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -86,12 +119,6 @@ export const Login = () => {
                     />
                   </div>
 
-                  {mensaje && (
-                    <div className={`alert alert-${mensaje.tipo} py-2 mb-3`} role="alert">
-                      {mensaje.texto}
-                    </div>
-                  )}
-
                   <button
                     type="submit"
                     className="btn btn-warning w-100 fw-bold py-2 mb-3 text-dark"
@@ -100,6 +127,29 @@ export const Login = () => {
                     {cargando ? 'INGRESANDO...' : 'INGRESAR'}
                   </button>
                 </form>
+
+                {/* Separador visual */}
+                <div className="my-3 d-flex align-items-center justify-content-center">
+                  <hr className="w-100 border-secondary me-2" />
+                  <span className="text-light small text-nowrap">O continúa con</span>
+                  <hr className="w-100 border-secondary ms-2" />
+                </div>
+
+                {/* Botón oficial de Google OAuth */}
+                <div className="d-flex justify-content-center mb-4">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() =>
+                      setMensaje({
+                        texto: 'Error al conectar con la cuenta de Google.',
+                        tipo: 'danger'
+                      })
+                    }
+                    theme="filled_black"
+                    shape="pill"
+                    text="signin_with"
+                  />
+                </div>
 
                 <p className="mb-0 text-light small">
                   ¿No tienes cuenta? <Link to="/registro" className="text-warning fw-bold text-decoration-none">Regístrate aquí</Link>

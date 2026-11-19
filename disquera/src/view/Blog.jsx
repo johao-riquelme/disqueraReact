@@ -53,14 +53,12 @@ export function Blog() {
             para los amantes de la música.
           </p>
 
-          <div className="blog-linea"></div>
+
         </div>
       </section>
 
-      {/* CONTENIDO PRINCIPAL */}
       <section className="blog-contenido container">
 
-        {/* FILTROS Y BUSCADOR */}
         <div className="blog-herramientas">
 
           <div className="blog-categorias">

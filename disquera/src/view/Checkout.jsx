@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCarrito } from '../context/CarritoContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
-import { crearPedidoAPI } from '../services/api.js';
+import { iniciarPagoWebpayAPI } from '../services/api.js';
 
 export const Checkout = () => {
-
-  const navigate = useNavigate();
-
   const {
     carrito,
     obtenerTotalPrecio,
-    vaciarCarrito
   } = useCarrito();
 
   const { usuario } = useAuth();
@@ -22,11 +17,12 @@ export const Checkout = () => {
     direccion: usuario?.direccion || '',
     comuna: usuario?.comuna || 'Santiago',
     region: usuario?.region || 'Región Metropolitana',
-    metodoPago: 'simulado',
+    metodoPago: 'webpay',
   });
 
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
+
   const obtenerTipoArticulo = (item) => {
     return item.tipo === 'plan'
       ? 'plan'
@@ -39,15 +35,14 @@ export const Checkout = () => {
   };
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setFormData((anterior) => ({
       ...anterior,
       [name]: value,
     }));
-
   };
+
   const handleProcesarPago = async (e) => {
     e.preventDefault();
     if (carrito.length === 0 || cargando) {
@@ -57,7 +52,6 @@ export const Checkout = () => {
     setError(null);
 
     try {
-
       const itemsPedido = carrito.map((item) => ({
         id: item.id,
         cantidad: item.cantidad,
@@ -67,98 +61,59 @@ export const Checkout = () => {
       const ordenData = {
         cliente: {
           ...formData,
-          metodoPago: 'simulado',
+          metodoPago: 'webpay',
         },
         items: itemsPedido,
         total: obtenerTotalPrecio(),
       };
-      const respuestaBD = await crearPedidoAPI(ordenData);
 
-      if (
-        !respuestaBD ||
-        respuestaBD.estado !== 'aprobado_simulado' ||
-        !respuestaBD.id
-      ) {
-        throw new Error(
-          'No se pudo confirmar el resultado de la compra.'
-        );
+      const respuestaWebpay = await iniciarPagoWebpayAPI(ordenData);
+
+      if (!respuestaWebpay?.url || !respuestaWebpay?.token) {
+        throw new Error('Transbank no devolvió una URL de pago válida.');
       }
 
-      const ordenConfirmada = {
+      sessionStorage.setItem('clienteWebpay', JSON.stringify(formData));
 
-        idOrden: respuestaBD.id,
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = respuestaWebpay.url;
 
-        fecha: new Date().toLocaleDateString('es-CL'),
+      const inputToken = document.createElement('input');
+      inputToken.type = 'hidden';
+      inputToken.name = 'token_ws';
+      inputToken.value = respuestaWebpay.token;
 
-        cliente: {
-          ...formData,
-        },
-
-        total: Number(respuestaBD.total),
-
-        estado: respuestaBD.estado,
-
-        medioPago: respuestaBD.medioPago,
-
-      };
-
-      vaciarCarrito();
-
-      navigate('/pago-exitoso', {
-        state: {
-          orden: ordenConfirmada,
-        },
-        replace: true,
-      });
+      form.appendChild(inputToken);
+      document.body.appendChild(form);
+      form.submit();
 
     } catch (err) {
-
-      console.error(
-        'Error al procesar el pedido:',
-        err
-      );
-
-      setError(
-        err.message ||
-        'No se pudo procesar la compra simulada.'
-      );
-
-    } finally {
-
+      console.error('Error al procesar el pago con Webpay:', err);
+      setError(err.message || 'No se pudo conectar con Webpay.');
       setCargando(false);
-
     }
-
   };
 
   if (carrito.length === 0) {
-
     return (
       <div className="fondo-hero min-vh-100 py-5 text-center text-light d-flex align-items-center justify-content-center">
-
         <div className="container pt-5">
-
           <h2 className="gold-title mb-3">
             Tu carrito está vacío
           </h2>
-
           <p className="text-muted">
             Agrega productos o planes desde la tienda
             antes de realizar el pago.
           </p>
-
         </div>
-
       </div>
     );
-
   }
+
   return (
-
     <main className="fondo-hero min-vh-100 py-5 text-light">
-
       <div className="container pt-5">
-
         <h2 className="gold-title fw-bold text-center mb-4">
           Finalizar Compra (Checkout)
         </h2>
@@ -170,25 +125,18 @@ export const Checkout = () => {
         )}
 
         <div className="row g-4">
-
           <div className="col-lg-7">
-
             <div className="rr text-light border-gold p-4 rounded-4 shadow-lg">
-
               <h4 className="gold-title mb-3">
                 Datos de Despacho
               </h4>
 
               <form onSubmit={handleProcesarPago}>
-
                 <div className="row g-3">
-
                   <div className="col-md-6 text-start">
-
                     <label className="form-label">
                       Nombre
                     </label>
-
                     <input
                       type="text"
                       name="nombre"
@@ -197,15 +145,12 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
 
                   <div className="col-md-6 text-start">
-
                     <label className="form-label">
                       Apellido
                     </label>
-
                     <input
                       type="text"
                       name="apellido"
@@ -214,15 +159,12 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
 
                   <div className="col-12 text-start">
-
                     <label className="form-label">
                       Correo Electrónico
                     </label>
-
                     <input
                       type="email"
                       name="email"
@@ -231,15 +173,12 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
 
                   <div className="col-12 text-start">
-
                     <label className="form-label">
                       Dirección
                     </label>
-
                     <input
                       type="text"
                       name="direccion"
@@ -248,15 +187,12 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
 
                   <div className="col-md-6 text-start">
-
                     <label className="form-label">
                       Comuna
                     </label>
-
                     <input
                       type="text"
                       name="comuna"
@@ -265,15 +201,12 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
 
                   <div className="col-md-6 text-start">
-
                     <label className="form-label">
                       Región
                     </label>
-
                     <input
                       type="text"
                       name="region"
@@ -282,7 +215,6 @@ export const Checkout = () => {
                       onChange={handleChange}
                       required
                     />
-
                   </div>
                 </div>
 
@@ -292,8 +224,8 @@ export const Checkout = () => {
                   disabled={cargando}
                 >
                   {cargando
-                    ? 'Procesando Pago...'
-                    : 'Confirmar y Pagar'
+                    ? 'Conectando con Webpay...'
+                    : 'Pagar con Webpay Plus'
                   }
                 </button>
               </form>
@@ -301,55 +233,41 @@ export const Checkout = () => {
           </div>
 
           <div className="col-lg-5">
-
             <div className="rr text-light border-gold p-4 rounded-4 shadow-lg">
-
               <h4 className="gold-title mb-3">
                 Resumen del Pedido
               </h4>
 
               <ul className="list-group list-group-flush mb-3">
-
                 {carrito.map((item) => (
-
                   <li
                     key={obtenerClaveArticulo(item)}
                     className="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center px-0 border-secondary"
                   >
-
                     <div>
-
                       <p className="mb-0 fw-bold">
                         {item.nombre || item.titulo}
                       </p>
-
                       <small className="text-muted">
                         Cantidad: {item.cantidad}
                       </small>
-
                       {item.tipo === 'plan' && (
-
                         <div>
-
                           <small className="text-warning">
                             Plan de servicio
                           </small>
-
                         </div>
-
                       )}
-
                     </div>
 
                     <span className="gold-title fw-bold">
                       ${(Number(item.precio) * item.cantidad).toLocaleString('es-CL')}
                     </span>
-
                   </li>
                 ))}
               </ul>
-              <div className="d-flex justify-content-between align-items-center fs-5 fw-bold border-top border-secondary pt-3">
 
+              <div className="d-flex justify-content-between align-items-center fs-5 fw-bold border-top border-secondary pt-3">
                 <span>
                   Total:
                 </span>

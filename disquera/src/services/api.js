@@ -1,8 +1,5 @@
 const API_URL = "http://localhost:8081/api";
 
-// ============================================================================
-// HELPER CENTRAL DE PETICIONES HTTP
-// ============================================================================
 async function peticion(ruta, opciones = {}) {
   let respuesta;
 
@@ -50,9 +47,6 @@ async function peticion(ruta, opciones = {}) {
   return datos;
 }
 
-// ============================================================================
-// PRODUCTOS (CATÁLOGO PÚBLICO)
-// ============================================================================
 export const obtenerProductosAPI = async () => {
   return peticion("/productos");
 };
@@ -61,9 +55,7 @@ export const obtenerProductoPorIdAPI = async (id) => {
   return peticion(`/productos/${id}`);
 };
 
-// ============================================================================
-// AUTENTICACIÓN Y USUARIOS
-// ============================================================================
+
 export const loginAPI = async (credenciales) => {
   return peticion("/usuarios/login", {
     method: "POST",
@@ -112,9 +104,6 @@ export const cerrarSesionAPI = async () => {
   });
 };
 
-// ============================================================================
-// PEDIDOS Y COMPRAS (CLIENTE)
-// ============================================================================
 export const crearPedidoAPI = async (ordenData) => {
   return peticion("/pedidos", {
     method: "POST",
@@ -126,9 +115,20 @@ export const obtenerMisComprasAPI = async () => {
   return peticion("/pedidos/mis-compras");
 };
 
-// ============================================================================
-// ADMINISTRACIÓN Y CSRF
-// ============================================================================
+export const iniciarPagoWebpayAPI = async (ordenData) => {
+  return peticion("/webpay/iniciar", {
+    method: "POST",
+    body: JSON.stringify(ordenData),
+  });
+};
+
+export const confirmarPagoWebpayAPI = async (tokens) => {
+  return peticion("/webpay/confirmar", {
+    method: "POST",
+    body: JSON.stringify(tokens),
+  });
+};
+
 export const obtenerCsrfAPI = async () => {
   const datos = await peticion("/csrf");
 

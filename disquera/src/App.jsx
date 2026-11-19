@@ -25,6 +25,7 @@ import { Blog } from './view/Blog';
 // Vistas del flujo de compras
 import { Checkout } from './view/Checkout';
 import { PagoExitoso } from './view/PagoExitoso';
+import { WebpayRetorno } from './view/WebpayRetorno';
 
 // NUEVA VISTA: HISTORIAL DE COMPRAS
 import { MisCompras } from './view/MisCompras';
@@ -37,7 +38,6 @@ import { AdminNuevoProducto } from './view/AdminNuevoProducto';
 import { AdminEditarProducto } from './view/AdminEditarProducto';
 
 function AppContent() {
-
   const [showCart, setShowCart] = useState(false);
   const location = useLocation();
 
@@ -49,14 +49,12 @@ function AppContent() {
 
   return (
     <>
-
       {/* NAVBAR */}
       {!esAdmin && (
         <Navbar handleShowCart={handleShowCart} />
       )}
 
       <Routes>
-
         {/* VISTAS PUBLICAS */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -80,6 +78,10 @@ function AppContent() {
         <Route
           path="/pago-exitoso"
           element={<PagoExitoso />}
+        />
+        <Route
+          path="/webpay/retorno"
+          element={<WebpayRetorno />}
         />
 
         {/* HISTORIAL DE COMPRAS */}
@@ -105,10 +107,12 @@ function AppContent() {
         <Route
           path="/admin/productos/editar/:id"
           element={<AdminEditarProducto />}
-/>
+        />
       </Routes>
+
       {/* FOOTER */}
       {!esAdmin && <Footer />}
+
       {/* CARRITO */}
       {!esAdmin && (
         <ModalCarrito
@@ -119,6 +123,7 @@ function AppContent() {
     </>
   );
 }
+
 function App() {
   return (
     <Router>
@@ -126,4 +131,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
